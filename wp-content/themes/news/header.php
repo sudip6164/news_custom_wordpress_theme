@@ -18,16 +18,12 @@
 				<div class="header-row justify-content-lg-between">
 
 					<div id="logo" class="mx-lg-auto col-auto flex-column order-lg-2 px-0">
-						<a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
-							<?php
-							if ( function_exists( 'the_custom_logo' ) && has_custom_logo() ) {
-								the_custom_logo();
-							} else {
-								echo '<span class="site-title">' . esc_html( get_bloginfo( 'name' ) ) . '</span>';
-							}
-							?>
+						<a href="<?php echo esc_url( home_url( '/' ) ); ?>">
+							<img class="logo-default" srcset="<?php echo esc_url( get_template_directory_uri() . '/assets/demos/blog/images/logo.png' ); ?>, <?php echo esc_url( get_template_directory_uri() . '/assets/demos/blog/images/logo@2x.png' ); ?> 2x" src="<?php echo esc_url( get_template_directory_uri() . '/assets/demos/blog/images/logo@2x.png' ); ?>" alt="Logo">
+							<img class="logo-dark" srcset="<?php echo esc_url( get_template_directory_uri() . '/assets/demos/blog/images/logo-dark.png' ); ?>, <?php echo esc_url( get_template_directory_uri() . '/assets/demos/blog/images/logo-dark@2x.png' ); ?> 2x" src="<?php echo esc_url( get_template_directory_uri() . '/assets/demos/blog/images/logo-dark@2x.png' ); ?>" alt="Logo">
+							<img class="logo-mobile" srcset="<?php echo esc_url( get_template_directory_uri() . '/assets/demos/blog/images/mobile-logo.png' ); ?>, <?php echo esc_url( get_template_directory_uri() . '/assets/demos/blog/images/mobile-logo@2x.png' ); ?> 2x" src="<?php echo esc_url( get_template_directory_uri() . '/assets/demos/blog/images/mobile-logo@2x.png' ); ?>" alt="Logo">
 						</a>
-						<span class="divider divider-center date-today"><span class="divider-text"></span></span>
+						<span class="divider divider-center date-today"><span class="divider-text"><?php echo esc_html( wp_date( 'D, M j' ) ); ?></span></span>
 					</div>
 
 					<div class="col-auto col-lg-3 order-lg-1 d-none d-md-flex px-0">
@@ -68,16 +64,36 @@
 				<div class="header-row justify-content-lg-center header-border">
 
 					<nav class="primary-menu with-arrows">
-						<?php
-						wp_nav_menu(
-							array(
-								'theme_location' => 'primary_menu',
-								'container'      => false,
-								'menu_class'     => 'menu-container justify-content-between',
-								'fallback_cb'    => false,
-							)
-						);
-						?>
+						<ul class="menu-container justify-content-between">
+							<?php
+							$locations = get_nav_menu_locations();
+							$menu_id   = isset( $locations['primary_menu'] ) ? $locations['primary_menu'] : 0;
+							$items     = $menu_id ? wp_get_nav_menu_items( $menu_id ) : array();
+
+							if ( ! empty( $items ) ) :
+								global $wp;
+								$current_request = isset( $wp->request ) ? $wp->request : '';
+								$current_path    = untrailingslashit( wp_parse_url( home_url( $current_request ), PHP_URL_PATH ) );
+
+								foreach ( $items as $item ) :
+									$item_path    = untrailingslashit( wp_parse_url( $item->url, PHP_URL_PATH ) );
+									$is_current   = ( $item_path === $current_path ) || in_array( 'current-menu-item', (array) $item->classes, true );
+									$item_classes = 'menu-item' . ( $is_current ? ' current' : '' );
+									?>
+									<li class="<?php echo esc_attr( $item_classes ); ?>">
+										<a class="menu-link" href="<?php echo esc_url( $item->url ); ?>">
+											<div><?php echo esc_html( $item->title ); ?></div>
+										</a>
+									</li>
+									<?php
+								endforeach;
+							else :
+								?>
+								<li class="menu-item current"><a class="menu-link" href="<?php echo esc_url( home_url( '/' ) ); ?>"><div>Home</div></a></li>
+								<?php
+							endif;
+							?>
+						</ul>
 					</nav>
 
 					<form role="search" method="get" class="top-search-form" action="<?php echo esc_url( home_url( '/' ) ); ?>">
