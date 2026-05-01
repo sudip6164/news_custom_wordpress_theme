@@ -9,7 +9,7 @@ function news_theme_setup() {
 
 	register_nav_menus(
 		array(
-			'primary_menu' => __( 'Primary Navigation'),
+			'primary_menu' => 'Primary Navigation',
 		)
 	);
 }
