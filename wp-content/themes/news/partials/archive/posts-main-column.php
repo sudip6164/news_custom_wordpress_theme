@@ -1,6 +1,7 @@
 <?php
 /**
- * Toolbar + 3-column post grid (+ pagination). Uses main query unless $args['query'] is a WP_Query.
+ * Toolbar + 3-column post grid (+ pagination). Optional $args['after'] HTML after the grid.
+ * Uses main query unless $args['query'] is a WP_Query.
  *
  * @package news
  */
@@ -12,13 +13,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 $_pmc       = isset( $args ) && is_array( $args ) ? $args : array();
 $heading    = isset( $_pmc['heading'] ) ? (string) $_pmc['heading'] : '';
 $custom_q   = isset( $_pmc['query'] ) && $_pmc['query'] instanceof WP_Query ? $_pmc['query'] : null;
-$before     = isset( $_pmc['before'] ) ? (string) $_pmc['before'] : '';
+$after      = isset( $_pmc['after'] ) ? (string) $_pmc['after'] : '';
 
 $paged = max( 1, (int) get_query_var( 'paged' ), (int) get_query_var( 'page' ) );
 
 ?>
-
-<?php echo $before; ?>
 
 <div class="d-flex mb-4">
 	<div class="flex-grow-1">
@@ -72,4 +71,10 @@ $paged = max( 1, (int) get_query_var( 'paged' ), (int) get_query_var( 'page' ) )
 	</nav>
 <?php elseif ( ! $custom_q ) : ?>
 	<?php the_posts_pagination( array( 'mid_size' => 2 ) ); ?>
+<?php endif; ?>
+
+<?php if ( '' !== $after ) : ?>
+	<div class="list-page-flexible-after mt-5">
+		<?php echo $after; ?>
+	</div>
 <?php endif; ?>

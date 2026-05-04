@@ -63,12 +63,16 @@ echo $banners_html;
 						array(
 							'heading' => 'All Posts',
 							'query'   => $list_query,
-							'before'  => $main_html,
 						)
 					);
 					?>
 				</div>
 			</div>
+			<?php if ( '' !== $main_html ) : ?>
+				<div class="mt-5">
+					<?php echo $main_html; ?>
+				</div>
+			<?php endif; ?>
 		</div>
 	</div>
 </section>
