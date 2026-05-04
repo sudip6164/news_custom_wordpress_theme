@@ -60,35 +60,39 @@ $featured_post  = null;
 $highlight_posts = array();
 
 /**
- * Resolve a category-ish ACF value into a term_id for WP_Query `cat`.
+ * Resolve category-ish ACF value into one or more term IDs.
  *
  * @param mixed $value
- * @return int
+ * @return int[]
  */
-$news_resolve_cat_id = static function ( $value ) {
+$news_resolve_cat_ids = static function ( $value ) {
+	$ids = array();
+
 	if ( ! $value ) {
-		return 0;
+		return $ids;
 	}
 
 	if ( is_numeric( $value ) ) {
-		return (int) $value;
-	}
-
-	if ( $value instanceof WP_Term ) {
-		return (int) $value->term_id;
-	}
-
-	if ( is_array( $value ) ) {
-		$first = reset( $value );
-		if ( $first instanceof WP_Term ) {
-			return (int) $first->term_id;
+		$ids[] = (int) $value;
+	} elseif ( $value instanceof WP_Term ) {
+		$ids[] = (int) $value->term_id;
+	} elseif ( is_array( $value ) ) {
+		foreach ( $value as $item ) {
+			if ( $item instanceof WP_Term ) {
+				$ids[] = (int) $item->term_id;
+			} elseif ( is_numeric( $item ) ) {
+				$ids[] = (int) $item;
+			} elseif ( is_array( $item ) ) {
+				if ( isset( $item['term_id'] ) && is_numeric( $item['term_id'] ) ) {
+					$ids[] = (int) $item['term_id'];
+				} elseif ( isset( $item['ID'] ) && is_numeric( $item['ID'] ) ) {
+					$ids[] = (int) $item['ID'];
+				}
+			}
 		}
-		if ( is_numeric( $first ) ) {
-			return (int) $first;
-		}
 	}
 
-	return 0;
+	return array_values( array_unique( array_filter( $ids ) ) );
 };
 
 $news_primary_category_markup = static function ( $post ) {
@@ -133,9 +137,9 @@ if ( 'manual' === $featured_mode ) {
 			'featured_query_category',
 		)
 	);
-	$featured_cat_id         = $news_resolve_cat_id( $featured_query_category );
-	if ( $featured_cat_id ) {
-		$featured_args['cat'] = $featured_cat_id;
+	$featured_cat_ids        = $news_resolve_cat_ids( $featured_query_category );
+	if ( ! empty( $featured_cat_ids ) ) {
+		$featured_args['category__in'] = $featured_cat_ids;
 	}
 
 	$featured_posts = get_posts( $featured_args );
@@ -194,12 +198,31 @@ if ( 'manual' === $highlights_mode ) {
 
 	$selected_ids = array_values( array_unique( array_filter( $selected_ids ) ) );
 
+	$manual_highlights_category = get_sub_field( 'highlights_category' );
+	$manual_highlights_cat_ids  = $news_resolve_cat_ids( $manual_highlights_category );
+
 	foreach ( $selected_ids as $post_id ) {
 		$post_obj = get_post( $post_id );
+		if ( ! ( $post_obj instanceof WP_Post ) ) {
+			continue;
+		}
+
+		if ( ! empty( $manual_highlights_cat_ids ) ) {
+			$post_cat_ids = wp_get_post_categories( $post_obj->ID );
+			if ( empty( $post_cat_ids ) || ! array_intersect( $manual_highlights_cat_ids, $post_cat_ids ) ) {
+				continue;
+			}
+		}
+
+		if ( $exclude_featured && $featured_post instanceof WP_Post && (int) $featured_post->ID === (int) $post_obj->ID ) {
+			continue;
+		}
+
 		if ( $post_obj instanceof WP_Post ) {
 			$highlight_posts[] = $post_obj;
 		}
 	}
+
 } elseif ( 'automatic' === $highlights_mode ) {
 	$args = array(
 		'post_type'           => 'any',
@@ -215,9 +238,9 @@ if ( 'manual' === $highlights_mode ) {
 	}
 
 	$highlights_category = get_sub_field( 'highlights_category' );
-	$highlights_cat_id     = $news_resolve_cat_id( $highlights_category );
-	if ( $highlights_cat_id ) {
-		$args['cat'] = $highlights_cat_id;
+	$highlights_cat_ids  = $news_resolve_cat_ids( $highlights_category );
+	if ( ! empty( $highlights_cat_ids ) ) {
+		$args['category__in'] = $highlights_cat_ids;
 	}
 
 	if ( $exclude_featured && $featured_post instanceof WP_Post ) {
