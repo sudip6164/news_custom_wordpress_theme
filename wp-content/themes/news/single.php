@@ -85,7 +85,60 @@ get_header();
 
 										<div class="clear"></div>
 
-										<?php comments_template(); ?>
+										<div id="comments">
+											<?php
+											$post_comments = get_comments(
+												array(
+													'post_id' => get_the_ID(),
+													'status'  => 'approve',
+													'order'   => 'ASC',
+												)
+											);
+											?>
+											<h3 id="comments-title"><span><?php echo esc_html( (string) count( $post_comments ) ); ?></span> Comments</h3>
+
+											<?php if ( ! empty( $post_comments ) ) : ?>
+												<ol class="commentlist">
+													<?php
+													wp_list_comments(
+														array(
+															'style'       => 'ol',
+															'short_ping'  => true,
+															'avatar_size' => 60,
+															'callback'    => 'news_comment_markup',
+														),
+														$post_comments
+													);
+													?>
+												</ol>
+											<?php endif; ?>
+
+											<div class="clear"></div>
+
+											<div id="respond">
+												<h3>Leave a <span>Comment</span></h3>
+
+												<form class="row mb-0" action="<?php echo esc_url( site_url( '/wp-comments-post.php' ) ); ?>" method="post" id="commentform">
+													<div class="form-group col-12">
+														<label for="comment">Comment</label>
+														<textarea name="comment" id="comment" cols="58" rows="7" class="form-control"></textarea>
+													</div>
+
+													<div class="form-group col-12 mt-4 mb-0">
+														<button name="submit" type="submit" id="submit-button" value="Submit" class="button button-large button-black button-dark text-transform-none fw-medium ls-0 button-rounded m-0">
+															Submit Comment
+														</button>
+													</div>
+
+													<?php comment_id_fields(); ?>
+													<?php do_action( 'comment_form', get_the_ID() ); ?>
+												</form>
+
+												<?php if ( ! comments_open() ) : ?>
+													<p class="mt-3 mb-0">Comments are currently closed.</p>
+												<?php endif; ?>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
