@@ -1,6 +1,6 @@
 <?php
 /**
- * List page banner only (category/tag/tax archives).
+ * List page: banner, sidebar, main column (grid added later).
  *
  * @package news
  */
@@ -85,6 +85,19 @@ if ( '' !== $banner_bg_url ) {
 				<?php if ( '' !== $banner_description ) : ?>
 					<span><?php echo wp_kses_post( $banner_description ); ?></span>
 				<?php endif; ?>
+			</div>
+		</div>
+	</div>
+</section>
+
+<section id="content">
+	<div class="content-wrap pt-0 pt-sm-6">
+		<div class="container">
+			<div class="row gutter-50">
+				<div class="col-lg-3 cat-widgets position-sticky h-100" style="top: 234px;">
+					<?php get_template_part( 'partials/archive/sidebar' ); ?>
+				</div>
+				<div class="col-lg-9"></div>
 			</div>
 		</div>
 	</div>
