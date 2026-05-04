@@ -9,6 +9,8 @@
 
 					<?php if ( 'featured_highlights' === get_row_layout() ) : ?>
 						<?php get_template_part( 'partials/flexible-content/featured-highlights' ); ?>
+					<?php elseif ( 'newsletter' === get_row_layout() ) : ?>
+						<?php get_template_part( 'partials/flexible-content/newsletter' ); ?>
 					<?php endif; ?>
 
 				<?php endwhile; ?>

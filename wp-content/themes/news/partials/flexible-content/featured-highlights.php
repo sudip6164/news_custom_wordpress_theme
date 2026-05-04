@@ -91,6 +91,21 @@ $news_resolve_cat_id = static function ( $value ) {
 	return 0;
 };
 
+$news_primary_category_markup = static function ( $post ) {
+	if ( ! ( $post instanceof WP_Post ) ) {
+		return '';
+	}
+
+	$cats = get_the_category( $post->ID );
+	if ( empty( $cats ) || empty( $cats[0] ) || ! ( $cats[0] instanceof WP_Term ) ) {
+		return '';
+	}
+
+	$cat = $cats[0];
+
+	return '<div class="entry-categories"><a href="' . esc_url( get_category_link( $cat ) ) . '">' . esc_html( $cat->name ) . '</a></div>';
+};
+
 if ( 'manual' === $featured_mode ) {
 	$featured_raw = get_sub_field( 'featured_post' );
 	if ( $featured_raw instanceof WP_Post ) {
@@ -230,6 +245,7 @@ if ( 'dark' === $section_style ) :
 								</a>
 							</div>
 							<div class="entry-title">
+								<?php echo $news_primary_category_markup( $featured_post ); ?>
 								<h3>
 									<a href="<?php echo esc_url( get_permalink( $featured_post ) ); ?>" class="stretched-link color-underline">
 										<span><?php echo esc_html( get_the_title( $featured_post ) ); ?></span>
@@ -261,6 +277,7 @@ if ( 'dark' === $section_style ) :
 									</div>
 									<div class="col-md-8">
 										<div class="entry-title title-xs">
+											<?php echo $news_primary_category_markup( $hp ); ?>
 											<h3>
 												<a href="<?php echo esc_url( get_permalink( $hp ) ); ?>" class="stretched-link color-underline">
 													<?php echo esc_html( get_the_title( $hp ) ); ?>
@@ -300,6 +317,7 @@ else :
 						</a>
 					</div>
 					<div class="entry-title">
+						<?php echo $news_primary_category_markup( $featured_post ); ?>
 						<h3>
 							<a href="<?php echo esc_url( get_permalink( $featured_post ) ); ?>" class="stretched-link color-underline">
 								<span><?php echo esc_html( get_the_title( $featured_post ) ); ?></span>
@@ -331,6 +349,7 @@ else :
 							</div>
 							<div class="col-md-8">
 								<div class="entry-title title-xs">
+									<?php echo $news_primary_category_markup( $hp ); ?>
 									<h3>
 										<a href="<?php echo esc_url( get_permalink( $hp ) ); ?>" class="stretched-link color-underline">
 											<?php echo esc_html( get_the_title( $hp ) ); ?>
