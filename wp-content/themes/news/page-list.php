@@ -44,7 +44,29 @@ echo $banners_html;
 					<?php get_template_part( 'partials/archive/sidebar' ); ?>
 				</div>
 				<div class="col-lg-9">
-					<?php echo $main_html; ?>
+					<?php
+					$paged = max( 1, (int) get_query_var( 'paged' ), (int) get_query_var( 'page' ) );
+
+					$list_query = new WP_Query(
+						array(
+							'post_type'           => 'post',
+							'post_status'         => 'publish',
+							'posts_per_page'      => (int) get_option( 'posts_per_page' ),
+							'paged'               => $paged,
+							'ignore_sticky_posts' => true,
+						)
+					);
+
+					get_template_part(
+						'partials/archive/posts-main-column',
+						null,
+						array(
+							'heading' => 'All Posts',
+							'query'   => $list_query,
+							'before'  => $main_html,
+						)
+					);
+					?>
 				</div>
 			</div>
 		</div>

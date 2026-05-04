@@ -1,6 +1,6 @@
 <?php
 /**
- * List page: banner, sidebar, main column (grid added later).
+ * Taxonomy archives: banner, sidebar, post grid (Canvas list demo).
  *
  * @package news
  */
@@ -97,7 +97,29 @@ if ( '' !== $banner_bg_url ) {
 				<div class="col-lg-3 cat-widgets position-sticky h-100" style="top: 234px;">
 					<?php get_template_part( 'partials/archive/sidebar' ); ?>
 				</div>
-				<div class="col-lg-9"></div>
+				<div class="col-lg-9">
+					<?php
+					$grid_heading = '';
+					if ( is_category() ) {
+						$grid_heading = sprintf( 'All %s Posts', single_cat_title( '', false ) );
+					} elseif ( is_tag() ) {
+						$grid_heading = sprintf( 'All %s Posts', single_tag_title( '', false ) );
+					} elseif ( is_tax() ) {
+						$term = get_queried_object();
+						if ( $term instanceof WP_Term ) {
+							$grid_heading = sprintf( 'All %s Posts', $term->name );
+						}
+					} else {
+						$t = get_the_archive_title( '', '', false );
+						$grid_heading = is_string( $t ) ? wp_strip_all_tags( $t ) : '';
+					}
+					get_template_part(
+						'partials/archive/posts-main-column',
+						null,
+						array( 'heading' => $grid_heading )
+					);
+					?>
+				</div>
 			</div>
 		</div>
 	</div>

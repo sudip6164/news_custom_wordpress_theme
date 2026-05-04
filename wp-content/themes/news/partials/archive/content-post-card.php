@@ -1,0 +1,47 @@
+<?php
+/**
+ * One card in the list grid (Canvas blog categories demo).
+ *
+ * @package news
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+$cats = get_the_category();
+
+$excerpt = get_the_excerpt();
+if ( '' === trim( $excerpt ) ) {
+	$excerpt = wp_trim_words( wp_strip_all_tags( get_the_content( '', false, get_post() ) ), 25, '…' );
+}
+?>
+
+<div class="col-md-4">
+	<article id="post-<?php the_ID(); ?>" <?php post_class( 'entry' ); ?>>
+		<?php if ( has_post_thumbnail() ) : ?>
+			<div class="entry-image mb-3">
+				<a href="<?php the_permalink(); ?>"><?php the_post_thumbnail( 'medium_large', array( 'alt' => '' ) ); ?></a>
+			</div>
+		<?php endif; ?>
+
+		<div class="entry-title title-sm">
+			<?php if ( ! empty( $cats[0] ) && $cats[0] instanceof WP_Term ) : ?>
+				<?php $c = $cats[0]; ?>
+				<div class="entry-categories"><a href="<?php echo esc_url( get_category_link( $c ) ); ?>"><?php echo esc_html( $c->name ); ?></a></div>
+			<?php endif; ?>
+			<h3><a href="<?php the_permalink(); ?>" class="color-underline stretched-link"><?php the_title(); ?></a></h3>
+		</div>
+
+		<div class="entry-meta">
+			<ul>
+				<li><?php echo esc_html( get_the_date() ); ?></li>
+			</ul>
+		</div>
+
+		<div class="entry-content mt-3">
+			<p><?php echo esc_html( $excerpt ); ?></p>
+			<a href="<?php the_permalink(); ?>" class="more-link">Read the article</a>
+		</div>
+	</article>
+</div>
