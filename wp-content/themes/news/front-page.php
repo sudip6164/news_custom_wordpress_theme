@@ -1,10 +1,18 @@
 <?php get_header(); ?>
 
 <section id="content">
-	<div class="content-wrap pt-5">
+	<div class="content-wrap pt-5" style="overflow: visible;">
 		<div class="container">
 
-            Home Page
+			<?php if ( function_exists( 'have_rows' ) && have_rows( 'home_sections' ) ) : ?>
+				<?php while ( have_rows( 'home_sections' ) ) : the_row(); ?>
+
+					<?php if ( 'featured_highlights' === get_row_layout() ) : ?>
+						<?php get_template_part( 'partials/flexible-content/featured-highlights' ); ?>
+					<?php endif; ?>
+
+				<?php endwhile; ?>
+			<?php endif; ?>
 
 		</div>
 	</div>
