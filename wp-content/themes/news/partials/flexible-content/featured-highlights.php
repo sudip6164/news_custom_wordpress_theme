@@ -295,7 +295,16 @@ if ( 'dark' === $section_style ) :
 								<div class="grid-inner row gutter-20">
 									<div class="col-md-4">
 										<a class="entry-image" href="<?php echo esc_url( get_permalink( $hp ) ); ?>">
-											<?php echo get_the_post_thumbnail( $hp, 'thumbnail' ); ?>
+											<?php
+											echo get_the_post_thumbnail(
+												$hp,
+												'thumbnail',
+												array(
+													'style' => 'width:100%;height:92px;object-fit:cover;',
+													'alt'   => '',
+												)
+											);
+											?>
 										</a>
 									</div>
 									<div class="col-md-8">
@@ -367,7 +376,16 @@ else :
 						<div class="grid-inner row gutter-20">
 							<div class="col-md-4">
 								<a class="entry-image" href="<?php echo esc_url( get_permalink( $hp ) ); ?>">
-									<?php echo get_the_post_thumbnail( $hp, 'thumbnail' ); ?>
+									<?php
+									echo get_the_post_thumbnail(
+										$hp,
+										'thumbnail',
+										array(
+											'style' => 'width:100%;height:92px;object-fit:cover;',
+											'alt'   => '',
+										)
+									);
+									?>
 								</a>
 							</div>
 							<div class="col-md-8">
