@@ -11,17 +11,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $cats = get_the_category();
 
-$excerpt = get_the_excerpt();
-if ( '' === trim( $excerpt ) ) {
-	$excerpt = wp_trim_words( wp_strip_all_tags( get_the_content( '', false, get_post() ) ), 25, '…' );
-}
 ?>
 
 <div class="col-md-4">
 	<article id="post-<?php the_ID(); ?>" <?php post_class( 'entry' ); ?>>
 		<?php if ( has_post_thumbnail() ) : ?>
 			<div class="entry-image mb-3">
-				<a href="<?php the_permalink(); ?>"><?php the_post_thumbnail( 'medium_large', array( 'alt' => '' ) ); ?></a>
+				<a href="<?php the_permalink(); ?>">
+					<?php
+					the_post_thumbnail(
+						'medium_large',
+						array(
+							'alt'   => '',
+							'style' => 'width:100%;height:240px;object-fit:cover;',
+						)
+					);
+					?>
+				</a>
 			</div>
 		<?php endif; ?>
 
@@ -37,11 +43,6 @@ if ( '' === trim( $excerpt ) ) {
 			<ul>
 				<li><?php echo esc_html( get_the_date() ); ?></li>
 			</ul>
-		</div>
-
-		<div class="entry-content mt-3">
-			<p><?php echo esc_html( $excerpt ); ?></p>
-			<a href="<?php the_permalink(); ?>" class="more-link">Read the article</a>
 		</div>
 	</article>
 </div>
