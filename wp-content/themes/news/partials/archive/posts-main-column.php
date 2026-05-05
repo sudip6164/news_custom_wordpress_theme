@@ -16,6 +16,20 @@ $custom_q   = isset( $_pmc['query'] ) && $_pmc['query'] instanceof WP_Query ? $_
 $after      = isset( $_pmc['after'] ) ? (string) $_pmc['after'] : '';
 
 $paged = max( 1, (int) get_query_var( 'paged' ), (int) get_query_var( 'page' ) );
+$sort  = isset( $_GET['sort'] ) ? sanitize_key( wp_unslash( $_GET['sort'] ) ) : 'latest';
+$sort  = in_array( $sort, array( 'latest', 'oldest', 'comments' ), true ) ? $sort : 'latest';
+
+$sort_labels = array(
+	'latest'   => 'Latest Posts',
+	'oldest'   => 'Oldest Posts',
+	'comments' => 'Most Comments',
+);
+
+$sort_links = array(
+	'latest'   => add_query_arg( 'sort', 'latest' ),
+	'oldest'   => add_query_arg( 'sort', 'oldest' ),
+	'comments' => add_query_arg( 'sort', 'comments' ),
+);
 
 ?>
 
@@ -27,10 +41,11 @@ $paged = max( 1, (int) get_query_var( 'paged' ), (int) get_query_var( 'page' ) )
 	</div>
 	<div>
 		<div class="btn-group">
-			<button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Most Popular</button>
+			<button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><?php echo esc_html( $sort_labels[ $sort ] ); ?></button>
 			<div class="dropdown-menu">
-				<a class="dropdown-item" href="#">Latest Posts</a>
-				<a class="dropdown-item" href="#">Most Comments</a>
+				<a class="dropdown-item<?php echo 'latest' === $sort ? ' active' : ''; ?>" href="<?php echo esc_url( $sort_links['latest'] ); ?>">Latest Posts</a>
+				<a class="dropdown-item<?php echo 'oldest' === $sort ? ' active' : ''; ?>" href="<?php echo esc_url( $sort_links['oldest'] ); ?>">Oldest Posts</a>
+				<a class="dropdown-item<?php echo 'comments' === $sort ? ' active' : ''; ?>" href="<?php echo esc_url( $sort_links['comments'] ); ?>">Most Comments</a>
 			</div>
 		</div>
 	</div>
@@ -64,13 +79,16 @@ $paged = max( 1, (int) get_query_var( 'paged' ), (int) get_query_var( 'page' ) )
 					'total'   => $custom_q->max_num_pages,
 					'current' => $paged,
 					'type'    => 'list',
+					'add_args'=> array(
+						'sort' => $sort,
+					),
 				)
 			)
 		);
 		?>
 	</nav>
 <?php elseif ( ! $custom_q ) : ?>
-	<?php the_posts_pagination( array( 'mid_size' => 2 ) ); ?>
+	<?php the_posts_pagination( array( 'mid_size' => 2, 'add_args' => array( 'sort' => $sort ) ) ); ?>
 <?php endif; ?>
 
 <?php if ( '' !== $after ) : ?>

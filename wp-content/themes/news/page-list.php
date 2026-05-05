@@ -46,6 +46,11 @@ echo $banners_html;
 				<div class="col-lg-9">
 					<?php
 					$paged = max( 1, (int) get_query_var( 'paged' ), (int) get_query_var( 'page' ) );
+					$sort  = isset( $_GET['sort'] ) ? sanitize_key( wp_unslash( $_GET['sort'] ) ) : 'latest';
+					$order = function_exists( 'news_get_sort_query_args' ) ? news_get_sort_query_args( $sort ) : array(
+						'orderby' => 'date',
+						'order'   => 'DESC',
+					);
 
 					$list_query = new WP_Query(
 						array(
@@ -54,6 +59,8 @@ echo $banners_html;
 							'posts_per_page'      => (int) get_option( 'posts_per_page' ),
 							'paged'               => $paged,
 							'ignore_sticky_posts' => true,
+							'orderby'             => $order['orderby'],
+							'order'               => $order['order'],
 						)
 					);
 
