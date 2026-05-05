@@ -11,10 +11,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $posts_page_id = (int) get_option( 'page_for_posts' );
 if ( 'posts' === get_option( 'show_on_front' ) ) {
-	$all_categories_url = home_url( '/' );
+	$all_categories_url = home_url( '/list/' );
 	$all_categories_active = is_front_page() && ! is_paged();
 } else {
-	$all_categories_url    = $posts_page_id ? get_permalink( $posts_page_id ) : home_url( '/' );
+	$all_categories_url    = home_url( '/list/' );
 	$all_categories_active = $posts_page_id && is_home() && ! is_paged();
 }
 
