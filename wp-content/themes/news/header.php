@@ -38,24 +38,35 @@
 				}
 			}
 
-			if (document.readyState === 'loading') {
-				document.addEventListener('DOMContentLoaded', applySavedScheme, { once: true });
-			} else {
-				applySavedScheme();
-			}
-
-			document.addEventListener('click', function (event) {
-				var toggle = event.target.closest('.body-scheme-toggle');
-				if (!toggle) {
+			function bindPersistenceObserver() {
+				if (!document.body || typeof MutationObserver === 'undefined') {
 					return;
 				}
 
-				// Let existing theme script toggle classes first, then persist the result.
-				window.setTimeout(function () {
-					var isDark = !!(document.body && document.body.classList.contains('dark'));
-					setSavedScheme(isDark ? 'dark' : 'light');
-				}, 0);
-			});
+				var observer = new MutationObserver(function (mutations) {
+					for (var i = 0; i < mutations.length; i++) {
+						if (mutations[i].attributeName !== 'class') {
+							continue;
+						}
+						var isDark = document.body.classList.contains('dark');
+						setSavedScheme(isDark ? 'dark' : 'light');
+						break;
+					}
+				});
+
+				observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+			}
+
+			function initColorSchemePersistence() {
+				applySavedScheme();
+				bindPersistenceObserver();
+			}
+
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', initColorSchemePersistence, { once: true });
+			} else {
+				initColorSchemePersistence();
+			}
 		})();
 	</script>
 </head>
