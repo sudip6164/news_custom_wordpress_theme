@@ -48,21 +48,6 @@ get_header();
 								</div>
 							<?php endif; ?>
 
-							<?php
-							$news_post_video = news_get_post_video_url( get_the_ID() );
-							if ( '' !== $news_post_video ) :
-								$news_video_poster = news_get_post_video_poster_url( get_the_ID(), $news_post_video );
-								?>
-								<div class="entry-image mt-5">
-									<a href="<?php echo esc_url( $news_post_video ); ?>" data-lightbox="iframe">
-										<?php if ( '' !== $news_video_poster ) : ?>
-											<img class="rounded" src="<?php echo esc_url( $news_video_poster ); ?>" alt="<?php echo esc_attr( get_the_title() ); ?>">
-										<?php endif; ?>
-										<div class="play-icon"><i class="bi-play"></i>Watch</div>
-									</a>
-								</div>
-							<?php endif; ?>
-
 							<div class="entry-content">
 								<div class="row">
 									<div class="col-lg-2 media-content">
