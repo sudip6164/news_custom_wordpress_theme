@@ -10,6 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $cats = get_the_category();
+$is_list_page = is_page_template( 'page-list.php' ) || is_page( 'list' );
 
 ?>
 
@@ -36,7 +37,14 @@ $cats = get_the_category();
 				<?php $c = $cats[0]; ?>
 				<div class="entry-categories"><a href="<?php echo esc_url( get_category_link( $c ) ); ?>"><?php echo esc_html( $c->name ); ?></a></div>
 			<?php endif; ?>
-			<h3><a href="<?php the_permalink(); ?>" class="color-underline stretched-link"><?php the_title(); ?></a></h3>
+			<h3>
+				<a
+					href="<?php the_permalink(); ?>"
+					class="color-underline stretched-link<?php echo $is_list_page ? ' news-line-clamp-3' : ''; ?>"
+				>
+					<?php the_title(); ?>
+				</a>
+			</h3>
 		</div>
 
 		<div class="entry-meta">

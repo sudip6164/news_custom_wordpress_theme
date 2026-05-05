@@ -302,7 +302,7 @@ if ( 'dark' === $section_style ) :
 										<div class="entry-title title-xs">
 											<?php echo $news_primary_category_markup( $hp ); ?>
 											<h3>
-												<a href="<?php echo esc_url( get_permalink( $hp ) ); ?>" class="stretched-link color-underline">
+												<a href="<?php echo esc_url( get_permalink( $hp ) ); ?>" class="stretched-link color-underline news-line-clamp-3">
 													<?php echo esc_html( get_the_title( $hp ) ); ?>
 												</a>
 											</h3>
@@ -374,7 +374,7 @@ else :
 								<div class="entry-title title-xs">
 									<?php echo $news_primary_category_markup( $hp ); ?>
 									<h3>
-										<a href="<?php echo esc_url( get_permalink( $hp ) ); ?>" class="stretched-link color-underline">
+										<a href="<?php echo esc_url( get_permalink( $hp ) ); ?>" class="stretched-link color-underline news-line-clamp-3">
 											<?php echo esc_html( get_the_title( $hp ) ); ?>
 										</a>
 									</h3>
