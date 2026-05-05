@@ -32,6 +32,9 @@ $categories = get_categories(
 <div class="widget widget-search">
 	<form role="search" method="get" class="input-group" action="<?php echo esc_url( home_url( '/' ) ); ?>">
 		<input class="form-control" type="search" name="s" placeholder="Search" aria-label="Search" value="<?php echo esc_attr( get_search_query() ); ?>" autocomplete="off">
+		<?php if ( $current_category_id > 0 ) : ?>
+			<input type="hidden" name="cat" value="<?php echo esc_attr( (string) $current_category_id ); ?>">
+		<?php endif; ?>
 		<button class="btn btn-outline-secondary uil uil-search" type="submit" aria-label="Search"></button>
 	</form>
 </div>
