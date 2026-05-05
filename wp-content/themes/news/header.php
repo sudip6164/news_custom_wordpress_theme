@@ -6,6 +6,58 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<?php wp_head(); ?>
+	<script>
+		(function () {
+			var storageKey = 'news-color-scheme';
+
+			function getSavedScheme() {
+				try {
+					return localStorage.getItem(storageKey);
+				} catch (err) {
+					return null;
+				}
+			}
+
+			function setSavedScheme(value) {
+				try {
+					localStorage.setItem(storageKey, value);
+				} catch (err) {
+					// Ignore storage failures (private mode, blocked storage, etc).
+				}
+			}
+
+			function applySavedScheme() {
+				if (!document.body) {
+					return;
+				}
+				var saved = getSavedScheme();
+				if (saved === 'dark') {
+					document.body.classList.add('dark');
+				} else if (saved === 'light') {
+					document.body.classList.remove('dark');
+				}
+			}
+
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', applySavedScheme, { once: true });
+			} else {
+				applySavedScheme();
+			}
+
+			document.addEventListener('click', function (event) {
+				var toggle = event.target.closest('.body-scheme-toggle');
+				if (!toggle) {
+					return;
+				}
+
+				// Let existing theme script toggle classes first, then persist the result.
+				window.setTimeout(function () {
+					var isDark = !!(document.body && document.body.classList.contains('dark'));
+					setSavedScheme(isDark ? 'dark' : 'light');
+				}, 0);
+			});
+		})();
+	</script>
 </head>
 
 <body <?php body_class( 'stretched search-overlay' ); ?>>
